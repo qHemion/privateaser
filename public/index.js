@@ -178,6 +178,12 @@ function computingPrices() {
 			events[i].commission.insurance = totalCommission/2;
 			events[i].commission.treasury = events[i].persons;
 			events[i].commission.privateaser = totalCommission - (events[i].commission.insurance + events[i].commission.treasury);
+			
+			if(events[i].options.deductibleReduction==true)
+			{
+				events[i].price+=events[i].persons;
+				events[i].commission.privateaser+=events[i].persons;
+			}
 		}
 	}
 }
