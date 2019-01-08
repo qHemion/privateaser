@@ -172,6 +172,12 @@ function computingPrices() {
 			}else if (events[i].persons>=10){
 				events[i].price = (events[i].price * 9) / 10;
 			}
+			
+			var totalCommission = (events[i].price * 3) /  10;
+			
+			events[i].commission.insurance = totalCommission/2;
+			events[i].commission.treasury = events[i].persons;
+			events[i].commission.privateaser = totalCommission - (events[i].commission.insurance + events[i].commission.treasury);
 		}
 	}
 }
