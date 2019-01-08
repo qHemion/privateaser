@@ -164,6 +164,14 @@ function computingPrices() {
 		}
 		else{
 			events[i].price = myBar.pricePerHour * events[i].time + myBar.pricePerPerson * events[i].persons;
+			if(events[i].persons>=60)
+			{
+				events[i].price = (events[i].price)/2;
+			}else if(events[i].persons>=20){
+				events[i].price = (events[i].price * 7 ) / 10;
+			}else if (events[i].persons>=10){
+				events[i].price = (events[i].price * 9) / 10;
+			}
 		}
 	}
 }
