@@ -146,6 +146,19 @@ const actors = [{
   }]
 }];
 
+function getPayment(actor, who){
+	var i;
+	for (i=0; i<actor.payment.length; i++)
+	{
+		if(actor.payment[i].who == who)
+		{
+			return actor.payment[i];
+		}
+	}
+	return undefined;
+	
+}
+
 function computingPrices() {
 	var i;
 	for (i = 0; i < events.length; i++) { 
@@ -164,18 +177,18 @@ function computingPrices() {
 		}
 		else{
 			events[i].price = myBar.pricePerHour * events[i].time + myBar.pricePerPerson * events[i].persons;
-			if(events[i].persons>=60)
+			if(events[i].persons>60)
 			{
 				events[i].price = (events[i].price)/2;
-			}else if(events[i].persons>=20){
+			}else if(events[i].persons>20){
 				events[i].price = (events[i].price * 7 ) / 10;
-			}else if (events[i].persons>=10){
+			}else if (events[i].persons>10){
 				events[i].price = (events[i].price * 9) / 10;
 			}
 			
 			var totalCommission = (events[i].price * 3) /  10;
 			
-			events[i].commission.insurance = totalCommission/2;
+			events[i].commission.insurance = totalCommission / 2;
 			events[i].commission.treasury = events[i].persons;
 			events[i].commission.privateaser = totalCommission - (events[i].commission.insurance + events[i].commission.treasury);
 			
@@ -183,6 +196,30 @@ function computingPrices() {
 			{
 				events[i].price+=events[i].persons;
 				events[i].commission.privateaser+=events[i].persons;
+			}
+			
+			var myActors = undefined;
+			
+			for(j=0; j<actors.length; j++){
+				if(actors[j].eventId == events[i].id)
+				{
+					myActors = actors[j];
+				}
+			}
+			
+			if(myActors!=undefined)
+			{
+				var currentActor = getPayment(myActors, "booker");
+				if(currentActor!= undefined) currentActor.amount = events[i].price;
+				currentActor = getPayment(myActors, "bar");
+				if(currentActor!= undefined) currentActor.amount = events[i].price - totalCommission;
+				currentActor = getPayment(myActors, "insurance");
+				if(currentActor!= undefined) currentActor.amount = events[i].commission.insurance;
+				currentActor = getPayment(myActors, "treasury");
+				if(currentActor!= undefined) currentActor.amount = events[i].commission.treasury;
+				currentActor = getPayment(myActors, "privateaser");
+				if(currentActor!= undefined) currentActor.amount = events[i].commission.privateaser;
+				
 			}
 		}
 	}
